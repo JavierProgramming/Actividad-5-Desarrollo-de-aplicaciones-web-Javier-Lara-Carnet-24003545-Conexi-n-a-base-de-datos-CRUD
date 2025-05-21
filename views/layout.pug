@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title= title
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    header
+      h1 My To Do App
+      nav
+        ul
+          li: a(href='/') Home
+          li: a(href='/tasks/getTasks') Tasks
+          li: a(href='/goals/getGoals') Goals
+    main
+      block content
+    footer
+      p &copy; 2025 My To Do App
