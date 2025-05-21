@@ -1,57 +1,65 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
 
-// Conexión a la base de datos
+// Crear conexión usando variables del .env
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // añade tu contraseña si tienes una configurada
-  database: 'todolist_db' // asegúrate de usar el nombre correcto de tu base de datos
+  host     : process.env.MYSQL_HOST,
+  user     : process.env.MYSQL_USER,
+  password : process.env.MYSQL_PASSWORD,
+  database : process.env.MYSQL_DATABASE
 });
 
-// Conexión a la base de datos al iniciar
 connection.connect((err) => {
   if (err) {
-    console.error('Error al conectar a la base de datos:', err.stack);
+    console.error('Error al conectar a MySQL: ' + err.stack);
     return;
   }
-  console.log('Conectado a la base de datos con ID', connection.threadId);
+  console.log('Conectado a MySQL como ID ' + connection.threadId);
 });
 
-// GET /getGoals - Obtener todas las metas
+// Obtener todas las metas
 router.get('/getGoals', (req, res) => {
   const query = 'SELECT * FROM goals';
   connection.query(query, (err, results) => {
-    if (err) return res.status(500).json({ error: 'Error al obtener metas', details: err });
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error al obtener metas' });
+    }
     res.status(200).json(results);
   });
 });
 
-// POST /addGoal - Agregar una nueva meta
+// Eliminar una meta por ID
+router.delete('/removeGoal/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM goals WHERE id = ?';
+
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error al eliminar la meta' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Agregar una nueva meta
 router.post('/addGoal', (req, res) => {
   const { name, description, dueDate } = req.body;
 
   if (!name || !description || !dueDate) {
-    return res.status(400).json({ error: 'Faltan datos requeridos' });
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
 
   const query = 'INSERT INTO goals (name, description, dueDate) VALUES (?, ?, ?)';
-  connection.query(query, [name, description, dueDate], (err, result) => {
-    if (err) return res.status(500).json({ error: 'Error al agregar meta', details: err });
-    res.status(201).json({ message: 'Meta agregada', insertId: result.insertId });
-  });
-});
-
-// DELETE /removeGoal/:id - Eliminar una meta por ID
-router.delete('/removeGoal/:id', (req, res) => {
-  const { id } = req.params;
-
-  const query = 'DELETE FROM goals WHERE id = ?';
-  connection.query(query, [id], (err, result) => {
-    if (err) return res.status(500).json({ error: 'Error al eliminar meta', details: err });
-    if (result.affectedRows === 0) return res.status(404).json({ message: 'Meta no encontrada' });
-    res.status(200).json({ message: 'Meta eliminada' });
+  connection.query(query, [name, description, dueDate], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(400).json({ error: 'Error al agregar la meta' });
+    }
+    res.status(200).json(results);
   });
 });
 
