@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mariadb:10.11 # versión LTS estable más reciente
+    container_name: mysql_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wp
+      MYSQL_DATABASE: desarrolloWeb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    restart: unless-stopped
