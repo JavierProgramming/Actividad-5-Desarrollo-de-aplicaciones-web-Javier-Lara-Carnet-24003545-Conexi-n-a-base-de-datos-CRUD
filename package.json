@@ -1,0 +1,33 @@
+{
+  "name": "todolist-express-backend",
+  "version": "1.0.0",
+  "description": "Backend API para una ToDo List con Express y MySQL",
+  "main": "bin/www",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "dotenv": "^16.5.0",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "keywords": [
+    "express",
+    "mysql",
+    "todo",
+    "api"
+  ],
+  "author": "TuNombre",
+  "license": "ISC"
+}
